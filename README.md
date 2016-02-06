@@ -13,7 +13,7 @@ BitTiger has already released bunch of good projects since Dec 2015. We can foll
 [2016/02/08 - 2016/02/14] Project Selection, Plan Discussion, and Proposal Draft Writing  
 [2016/02/15 - 2016/02/29] System Design, Resource Discovery, Project Implementation, Document Writing  
 [2016/03/01 - 2016/03/07] User Manual Writing and Video Presentation Making  
-Details of each schedule and task will be added later.
+> Details of each schedule and task will be added later.
 
 # Resource
 Check the shared documents in our private slack channel.  
