@@ -10,14 +10,14 @@ Quality beats quantity. Instead of going through a lot of questions, if you can 
 # Plan 
 BitTiger has already released bunch of good projects since Dec 2015. We can follow the instruction from the video to build our own products. 
 
-[2016/02/08 - 2016/02/14] Project Selection, Plan Discussion, and Proposal Draft Writing
-[2016/02/15 - 2016/02/29] System Design, Resource Discovery, Project Implementation, Document Writing
-[2016/03/01 - 2016/03/07] User Manual Writing and Video Presentation Making
+[2016/02/08 - 2016/02/14] Project Selection, Plan Discussion, and Proposal Draft Writing  
+[2016/02/15 - 2016/02/29] System Design, Resource Discovery, Project Implementation, Document Writing  
+[2016/03/01 - 2016/03/07] User Manual Writing and Video Presentation Making  
 Details of each schedule and task will be added later.
 
 # Resource
-Check the shared documents in our private slack channel.
-The projects interesting to me are listed below
+Check the shared documents in our private slack channel.  
+The projects interesting to me are listed below  
 1. AppStore - Crawler (python)
 2. AppStore - Recommender (python / spark)
 3. AppStore - website (Meteor/React)
