@@ -1,1 +1,2 @@
-adsfasdf
+print "Hello World!"
+
