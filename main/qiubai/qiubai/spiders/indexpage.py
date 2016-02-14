@@ -2,8 +2,8 @@ __author__ = 'jing'
 
 import scrapy
 # uncomment below to fix issue of "Scrapy gives URLError: <urlopen error timed out>"
-from scrapy import optional_features
-optional_features.remove('boto')
+# from scrapy import optional_features
+# optional_features.remove('boto')
 
 
 class QuibaiSpider(scrapy.Spider):

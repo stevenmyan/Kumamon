@@ -20,7 +20,7 @@ NEWSPIDER_MODULE = 'qiubai.spiders'
 
 # pretend to be a regular user when crawling
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36'
-DOWNLOAD_HANDLERS = {'S3':None,}
+#DOWNLOAD_HANDLERS = {'S3':None,}
 
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
