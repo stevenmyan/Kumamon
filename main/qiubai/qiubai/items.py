@@ -5,10 +5,17 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy import Item, Field
 
 
-class QiubaiItem(scrapy.Item):
+class QiubaiItem(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    pass
+    authors = Field()
+    contents = Field()
+    comments = Field()
+
+
+
+
+

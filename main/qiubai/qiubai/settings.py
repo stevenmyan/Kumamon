@@ -17,7 +17,6 @@ NEWSPIDER_MODULE = 'qiubai.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'qiubai (+http://www.yourdomain.com)'
-
 # pretend to be a regular user when crawling
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36'
 #DOWNLOAD_HANDLERS = {'S3':None,}
@@ -66,9 +65,13 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'qiubai.pipelines.SomePipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'qiubai.pipelines.QiubaiPipeline': 300,
+}
+# 300这个数字是0到1000之间的数字，越小就代表越优先处理
+# 如果这个数字是None，就代表这个生产机器人暂时不被使用
+MONGO_URI = "127.0.0.1:27017"
+MONGO_DATABASE = "qiubai"
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
