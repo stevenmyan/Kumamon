@@ -31,40 +31,29 @@ class HuaweiSpider(BaseSpider):
 
         for div in divs:
             item = AppstoreItem()
-            title = div.xpath('.//div[@class="game-info-ico"]//img[@class="app-ico"]/@title').extract_first().encode('utf-8')
-            #image_url = div.xpath('.//div[@class="game-info-ico"]//img[@class="app-ico"]/@src').extract()[0]
+
+            # image
             image_url = div.xpath('.//div[@class="game-info-ico"]//img[@class="app-ico"]/@lazyload').extract()[0] #这里lazyload属性在view page source里面可以看见
             item["image_url"] = image_url
 
-            print "image_url: ", image_url
-            print "title: ", title
 
-
-
+            # stats
             info = div.xpath('.//div[@class="game-info  whole"]')
             item["title"] = info.xpath('./h4[@class="title"]/a/text()').extract_first().encode('utf-8')
             item["url"] = info.xpath('./h4[@class="title"]/a/@href').extract_first()
             item["appid"] = re.match(r'http://.*/(.*)', item["url"]).group(1)  #appid is extracted from url
             item["intro"] = info.xpath('.//p[@class="content"]/text()').extract_first().encode('utf-8')  #这里p标签不是div变量的子标签,是孙子标签
 
-            # go to subpage
+            # child page for more details
+            # pass existing item to child page via attr meta
             href = div.xpath('.//div[@class="game-info  whole"]//a/@href').extract_first()
-            print "href: ", href, "\n"
             req = Request(href, callback=self.parse_detail_page, meta={'item': item})
-            # req = Request(href, callback=self.parse_detail_page, meta={
-            #     'splash': {
-            #         'endpoint': 'render.html',
-            #         'args': {'wait': 0.5}
-            #     },
-            #     'item': item
-            # })
-            #req.meta["item"] = item
             yield req
 
     def parse_detail_page(self, response):
         item = response.meta["item"]
-        divs = response.xpath('//div[@class="app-sweatch  nofloat"]')
 
+        divs = response.xpath('//div[@class="app-sweatch  nofloat"]')
         recommended = []
         for div in divs:
             rank = div.xpath('.//em[@class="num-red"]/text()').extract_first()
