@@ -10,14 +10,12 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = 'appstore'
-
 SPIDER_MODULES = ['appstore.spiders']
 NEWSPIDER_MODULE = 'appstore.spiders'
 
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'appstore (+http://www.yourdomain.com)'
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36'
+#USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36'
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS=32
 
@@ -51,10 +49,12 @@ DOWNLOAD_DELAY=5
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-   'scrapyjs.SplashMiddleware': 725,
+    'scrapyjs.SplashMiddleware': 725,
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None, # relace it with the one below
+    'appstore.random_useragent.RandomUserAgentMiddleware': 400,
+    'appstore.random_proxy.RandomProxyMiddleware': None
 }
-SPLASH_URL = 'http://localhost:8050'
-#SPLASH_URL = 'http://192.168.59.103:8050'
+SPLASH_URL = 'http://192.168.99.100:8050'  # the format is 'DOCKER_HOST_IP:CONTAINER_PORT'
 DUPEFILTER_CLASS = 'scrapyjs.SplashAwareDupeFilter'
 HTTPCACHE_STORAGE = 'scrapyjs.SplashAwareFSCacheStorage'
 
@@ -67,12 +67,12 @@ HTTPCACHE_STORAGE = 'scrapyjs.SplashAwareFSCacheStorage'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'appstore.pipelines.AppstorePipeline': 1,
+   'appstore.pipelines.AppstoreWritePipeline': 3,
    'appstore.pipelines.AppstoreImagesPipeline': 2,
+   'appstore.pipelines.AppstoreMongodbPipeline': 1,
 }
 
-# 300这个数字是0到1000之间的数字，越小就代表越优先处理
-# 如果这个数字是None，就代表这个生产机器人暂时不被使用
+# mongo db settings
 MONGO_URI = "127.0.0.1:27017"
 MONGO_DATABASE = "appstore"
 
@@ -98,8 +98,8 @@ MONGO_DATABASE = "appstore"
 
 
 # image downloading
-IMAGES_STORE = '/Users/jingli430/PycharmProjects/Kumamon/appstore/images'   # 图片存储路径
-IMAGES_EXPIRES = 90                                   # 过期天数
-# IMAGES_MIN_HEIGHT = 100                               # 图片的最小高度
-# IMAGES_MIN_WIDTH = 100                                # 图片的最小宽度
-# 图片的尺寸小于IMAGES_MIN_WIDTH*IMAGES_MIN_HEIGHT的图片都会被过滤
+IMAGES_STORE = '/Users/jingli430/PycharmProjects/Kumamon/appstore/images'
+IMAGES_EXPIRES = 90  # will update when beyond this limit
+# any size smaller than below will be filtered out
+# IMAGES_MIN_HEIGHT = 100
+# IMAGES_MIN_WIDTH = 100

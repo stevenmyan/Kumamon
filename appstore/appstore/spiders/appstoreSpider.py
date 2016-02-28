@@ -3,11 +3,12 @@ __author__ = 'jing'
 
 from scrapy.spider import BaseSpider
 from scrapy import Request
+import scrapy
 import re
-from scrapy.selector import Selector, HtmlXPathSelector
+from scrapy.selector import Selector
 from appstore.items import AppstoreItem
 
-# uncomment below to fix issue of "Scrapy gives URLError: <urlopen error timed out>"
+# fix issue of "Scrapy gives URLError: <urlopen error timed out>"
 from scrapy import optional_features
 optional_features.remove('boto')
 
@@ -21,47 +22,95 @@ class HuaweiSpider(BaseSpider):
         "http://appstore.huawei.com/more/all"
     ]
 
+    # render since the start url
+    def start_requests(self):
+        for url in self.start_urls:
+            yield scrapy.Request(url, self.parse, meta={
+                'splash': {
+                    'endpoint': 'render.html',
+                    'args': {'wait': 0.5}
+                }
+            })
+
+        """
+
+        """
+
     def parse(self, response):
+        """
+        response.body is a result of render.html call; it contains HTML processed by a browser.
+        here we parse the html
+        :param response:
+        :return: request to detail page & request to next page if exists
+        """
         page = Selector(response)
         divs = page.xpath('//div[@class="list-game-app dotline-btn nofloat"]')
+        current_url = response.url
+        print "num of app in current page: ", len(divs)
+        print "current url: ", current_url
 
-        #print to debug
-        print len(divs)
-        print divs
-
+        # parse details
+        count = 0
         for div in divs:
+            if count >= 2:
+                break
             item = AppstoreItem()
-
-            # image
-            image_url = div.xpath('.//div[@class="game-info-ico"]//img[@class="app-ico"]/@lazyload').extract()[0] #这里lazyload属性在view page source里面可以看见
-            item["image_url"] = image_url
-
-
-            # stats
             info = div.xpath('.//div[@class="game-info  whole"]')
-            item["title"] = info.xpath('./h4[@class="title"]/a/text()').extract_first().encode('utf-8')
-            item["url"] = info.xpath('./h4[@class="title"]/a/@href').extract_first()
-            item["appid"] = re.match(r'http://.*/(.*)', item["url"]).group(1)  #appid is extracted from url
-            item["intro"] = info.xpath('.//p[@class="content"]/text()').extract_first().encode('utf-8')  #这里p标签不是div变量的子标签,是孙子标签
-
-            # child page for more details
-            # pass existing item to child page via attr meta
-            href = div.xpath('.//div[@class="game-info  whole"]//a/@href').extract_first()
-            req = Request(href, callback=self.parse_detail_page, meta={'item': item})
+            detail_url = info.xpath('./h4[@class="title"]/a/@href').extract_first()
+            item["url"] = detail_url
+            req = Request(detail_url, callback=self.parse_detail_page)
+            req.meta["item"] = item
+            count += 1
             yield req
 
+        # next page
+        page_ctrl = response.xpath('//div[@class="page-ctrl ctrl-app"]')
+        isNextPageThere = page_ctrl.xpath('.//em[@class="arrow-grey-rt"]').extract()
+
+        if isNextPageThere:
+            current_page_index = int(page_ctrl.xpath('./span[not(@*)]/text()').extract_first()) # not any on specific attr "div[not(@attr)]"
+            if current_page_index >= 5:
+                print "let's stop here for now"
+                return
+            next_page_index = str(current_page_index + 1)
+
+            next_page_url = self.start_urls[0] + "/" + next_page_index
+
+            print "next_page_index: ", next_page_index, "next_page_url: ", next_page_url
+            request = scrapy.Request(next_page_url, callback=self.parse, meta={ # render the next page
+                'splash': {
+                    'endpoint': 'render.html',
+                    'args': {'wait': 0.5}
+                },
+            })
+            yield request
+        else:
+            print "this is the end!"
+
+
     def parse_detail_page(self, response):
+        """
+        GET details for each app
+        :param response:
+        :return: item
+        """
         item = response.meta["item"]
 
-        divs = response.xpath('//div[@class="app-sweatch  nofloat"]')
+        # details about current app
+        item["image_url"] = response.xpath('//ul[@class="app-info-ul nofloat"]//img[@class="app-ico"]/@lazyload').extract()[0]
+        item["title"] = response.xpath('//ul[@class="app-info-ul nofloat"]//span[@class="title"]/text()').extract_first().encode('utf-8')
+        item["appid"] = re.match(r'http://.*/(.*)', item["url"]).group(1)
+        item["intro"] = response.xpath('//div[@class="content"]/div[@id="app_strdesc"]/text()').extract_first().encode('utf-8')
+
+        # recommended apps
+        divs = response.xpath('//div[@class="unit nofloat corner"]/div[@class="unit-main nofloat"]/div[@class="app-sweatch  nofloat"]')
         recommended = []
         for div in divs:
-            rank = div.xpath('.//em[@class="num-red"]/text()').extract_first()
-            name = div.xpath('.//p[@class="name"]/a/text()').extract_first().encode('utf-8')
-            url = div.xpath('.//p[@class="name"]/a/@href').extract_first()
+            rank = div.xpath('./div[@class="open nofloat"]/em/text()').extract_first()
+            name = div.xpath('./div[@class="open nofloat"]/div[@class="open-info"]/p[@class="name"]/a/@title').extract()[0].encode('utf-8')
+            url = div.xpath('./div[@class="open nofloat"]/div[@class="open-info"]/p[@class="name"]/a/@href').extract_first()
             recommended_appid = re.match(r'http://.*/(.*)', url).group(1)
-            recommended.append({'name-red': name, 'rank-red': rank, 'appid-red':recommended_appid})
+            recommended.append({'name-rec': name, 'rank-rec': rank, 'appid-rec': recommended_appid})
 
         item["recommended"] = recommended
         yield item
-
