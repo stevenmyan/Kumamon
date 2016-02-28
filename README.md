@@ -10,9 +10,9 @@ First Stage: Create a Scrapy project to crawl the content in the Xiaomi Appstore
 Second Stage: Save the crawled content in MongoDB[2]. Install Python MongoDB driver and modify pipelines.py to insert crawled data into MongoDB.      
 **[2016/02/22 - 2016/02/29]**  
 Third Stage: Crawl more content by following next page links. So far you have likely only crawled the content of the home page. We need to use Splash[3] and ScrapyJS[4] to re-render the web page to transform the dynamic part to static content if the next page link is written in JavaScript    
-**Bonus Round**
-1. pull results from mongo db and show it in browser via flask
-2. multiprocessing (tbd)
+**Bonus Round**  
+1. pull results from mongo db and show it in browser via flask  
+2. multiprocessing (tbd)  
 
 
 # What is next?
