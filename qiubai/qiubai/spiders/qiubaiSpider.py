@@ -68,7 +68,7 @@ class QuibaiSpider(BaseSpider):
         for comment in response.xpath('//div[starts-with(@class, "comment-block clearfix floor")]'):  # start后面有s,是dash不是under_score
             comment_author = comment.xpath('./div[2]/a/text()').extract()[0]  # extract()返回的是list,但是这里是每个comment只有一个评论者和一个评论,所以要提取第一个元素
             comment_content = comment.xpath('./div[2]/span/text()').extract()[0]
-            comments.append({'comment_author':comment_author, 'comment_content':comment_content}) # 构建成一个dict,然后赋值给item用
+            comments.append({'comment_author': comment_author, 'comment_content': comment_content}) # 构建成一个dict,然后赋值给item用
 
         item["comments"] = comments
 

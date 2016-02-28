@@ -14,8 +14,3 @@ class QiubaiItem(Item):
     authors = Field()
     contents = Field()
     comments = Field()
-
-
-
-
-
