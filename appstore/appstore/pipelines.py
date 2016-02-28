@@ -16,7 +16,7 @@ class AppstoreWritePipeline(object):
         self.file = open('appstore.dat', 'wb')
 
     def process_item(self, item, spider):
-        val = "{0}\t{1}\t{2}\n{3}\n\n".format(item['appid'], item['title'], item['intro'], item['recommended'])
+        val = "{0}\t{1}\t{2}\n{3}\n\n".format(item['appid'], item['title'], item['intro'], item['recommends'])
         self.file.write(val)
         return item  # must return (or drop) the item at the end of each pipeline, this item will be used in subsequent item pipeline
 

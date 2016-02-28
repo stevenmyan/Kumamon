@@ -2,17 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Crawler Output for Huawei Appstore</title>
+    <title>App Stats from Huawei appstore</title>
 </head>
 <!--use liquid tag and liquid output here to help render-->
 <body>
     {% for app in apps %}
+    <img src="{{ url_for('static', filename=app.image_paths[0]) }}"</img>
     <h3>{{ app.title }}</h3>
     <div>{{ app.intro }}</div>
-    <img src="{{ url_for('images', filename=app.image_paths[0]) }}"/>
+    <div>{{ app.url }}</div>
+
     <ul>
-        {% for rec in app.recommended %}
-        <li>{{ rec.name }} : {{ rec.rank }} : {{ rec.url }} </li>
+        {% for rec in app.recommends %}
+        <li>{{ rec.rank }} : {{ rec.name }}</li>
         {% endfor %}
     </ul>
     <hr />

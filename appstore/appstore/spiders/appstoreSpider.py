@@ -32,9 +32,6 @@ class HuaweiSpider(BaseSpider):
                 }
             })
 
-        """
-
-        """
 
     def parse(self, response):
         """
@@ -104,13 +101,13 @@ class HuaweiSpider(BaseSpider):
 
         # recommended apps
         divs = response.xpath('//div[@class="unit nofloat corner"]/div[@class="unit-main nofloat"]/div[@class="app-sweatch  nofloat"]')
-        recommended = []
+        recommends = []
         for div in divs:
             rank = div.xpath('./div[@class="open nofloat"]/em/text()').extract_first()
             name = div.xpath('./div[@class="open nofloat"]/div[@class="open-info"]/p[@class="name"]/a/@title').extract()[0].encode('utf-8')
             url = div.xpath('./div[@class="open nofloat"]/div[@class="open-info"]/p[@class="name"]/a/@href').extract_first()
-            recommended_appid = re.match(r'http://.*/(.*)', url).group(1)
-            recommended.append({'name-rec': name, 'rank-rec': rank, 'appid-rec': recommended_appid})
+            rec_appid = re.match(r'http://.*/(.*)', url).group(1)
+            recommends.append({'name': name, 'rank': rank, 'appid': rec_appid})
 
-        item["recommended"] = recommended
+        item["recommends"] = recommends
         yield item

@@ -14,7 +14,7 @@ class AppstoreItem(Item):
     url = Field()
     appid = Field()
     intro = Field()
-    recommended = Field()
+    recommends = Field()
 
     # image
     image_url = Field()

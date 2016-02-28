@@ -67,9 +67,9 @@ HTTPCACHE_STORAGE = 'scrapyjs.SplashAwareFSCacheStorage'
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'appstore.pipelines.AppstoreWritePipeline': 3,
+   'appstore.pipelines.AppstoreWritePipeline': 1,
    'appstore.pipelines.AppstoreImagesPipeline': 2,
-   'appstore.pipelines.AppstoreMongodbPipeline': 1,
+   'appstore.pipelines.AppstoreMongodbPipeline': 3,
 }
 
 # mongo db settings
@@ -98,7 +98,7 @@ MONGO_DATABASE = "appstore"
 
 
 # image downloading
-IMAGES_STORE = '/Users/jingli430/PycharmProjects/Kumamon/appstore/images'
+IMAGES_STORE = '/Users/jingli430/PycharmProjects/Kumamon/appstore/appstore/images'
 IMAGES_EXPIRES = 90  # will update when beyond this limit
 # any size smaller than below will be filtered out
 # IMAGES_MIN_HEIGHT = 100
