@@ -10,7 +10,7 @@ from appstore.items import AppstoreItem
 
 # fix issue of "Scrapy gives URLError: <urlopen error timed out>"
 from scrapy import optional_features
-optional_features.remove('boto')
+#optional_features.remove('boto')
 
 
 class HuaweiSpider(BaseSpider):
@@ -25,12 +25,7 @@ class HuaweiSpider(BaseSpider):
     # render since the start url
     def start_requests(self):
         for url in self.start_urls:
-            yield scrapy.Request(url, self.parse, meta={
-                'splash': {
-                    'endpoint': 'render.html',
-                    'args': {'wait': 0.5}
-                }
-            })
+            yield scrapy.Request(url, self.parse)
 
 
     def parse(self, response):
@@ -43,8 +38,6 @@ class HuaweiSpider(BaseSpider):
         page = Selector(response)
         divs = page.xpath('//div[@class="list-game-app dotline-btn nofloat"]')
         current_url = response.url
-        print "num of app in current page: ", len(divs)
-        print "current url: ", current_url
 
         # parse details
         count = 0
@@ -61,6 +54,7 @@ class HuaweiSpider(BaseSpider):
             yield req
 
         # next page
+        '''
         page_ctrl = response.xpath('//div[@class="page-ctrl ctrl-app"]')
         isNextPageThere = page_ctrl.xpath('.//em[@class="arrow-grey-rt"]').extract()
 
@@ -74,16 +68,11 @@ class HuaweiSpider(BaseSpider):
             next_page_url = self.start_urls[0] + "/" + next_page_index
 
             print "next_page_index: ", next_page_index, "next_page_url: ", next_page_url
-            request = scrapy.Request(next_page_url, callback=self.parse, meta={ # render the next page
-                'splash': {
-                    'endpoint': 'render.html',
-                    'args': {'wait': 0.5}
-                },
-            })
+            request = scrapy.Request(next_page_url, callback=self.parse)
             yield request
         else:
             print "this is the end!"
-
+        '''
 
     def parse_detail_page(self, response):
         """
@@ -94,20 +83,21 @@ class HuaweiSpider(BaseSpider):
         item = response.meta["item"]
 
         # details about current app
-        item["image_url"] = response.xpath('//ul[@class="app-info-ul nofloat"]//img[@class="app-ico"]/@lazyload').extract()[0]
-        item["title"] = response.xpath('//ul[@class="app-info-ul nofloat"]//span[@class="title"]/text()').extract_first().encode('utf-8')
-        item["appid"] = re.match(r'http://.*/(.*)', item["url"]).group(1)
-        item["intro"] = response.xpath('//div[@class="content"]/div[@id="app_strdesc"]/text()').extract_first().encode('utf-8')
+        item["image_url"] = 'test'#response.xpath('//ul[@class="app-info-ul nofloat"]//img[@class="app-ico"]/@lazyload').extract()[0]
+        item["title"] = 'test'#response.xpath('//ul[@class="app-info-ul nofloat"]//span[@class="title"]/text()').extract_first().encode('utf-8')
+        item["appid"] = 'test'#re.match(r'http://.*/(.*)', item["url"]).group(1)
+        item["intro"] = 'test'#response.xpath('//div[@class="content"]/div[@id="app_strdesc"]/text()').extract_first().encode('utf-8')
 
         # recommended apps
-        divs = response.xpath('//div[@class="unit nofloat corner"]/div[@class="unit-main nofloat"]/div[@class="app-sweatch  nofloat"]')
+        #divs = response.xpath('//div[@class="unit nofloat corner"]/div[@class="unit-main nofloat"]/div[@class="app-sweatch  nofloat"]')
         recommends = []
+        '''
         for div in divs:
             rank = div.xpath('./div[@class="open nofloat"]/em/text()').extract_first()
             name = div.xpath('./div[@class="open nofloat"]/div[@class="open-info"]/p[@class="name"]/a/@title').extract()[0].encode('utf-8')
             url = div.xpath('./div[@class="open nofloat"]/div[@class="open-info"]/p[@class="name"]/a/@href').extract_first()
             rec_appid = re.match(r'http://.*/(.*)', url).group(1)
             recommends.append({'name': name, 'rank': rank, 'appid': rec_appid})
-
+        '''
         item["recommends"] = recommends
         yield item

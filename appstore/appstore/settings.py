@@ -49,14 +49,14 @@ DOWNLOAD_DELAY=5
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'scrapyjs.SplashMiddleware': 725,
+    #'scrapyjs.SplashMiddleware': 725,
     'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None, # relace it with the one below
     'appstore.random_useragent.RandomUserAgentMiddleware': 400,
     'appstore.random_proxy.RandomProxyMiddleware': None
 }
 SPLASH_URL = 'http://192.168.99.100:8050'  # the format is 'DOCKER_HOST_IP:CONTAINER_PORT'
-DUPEFILTER_CLASS = 'scrapyjs.SplashAwareDupeFilter'
-HTTPCACHE_STORAGE = 'scrapyjs.SplashAwareFSCacheStorage'
+#DUPEFILTER_CLASS = 'scrapyjs.SplashAwareDupeFilter'
+#HTTPCACHE_STORAGE = 'scrapyjs.SplashAwareFSCacheStorage'
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -68,7 +68,7 @@ HTTPCACHE_STORAGE = 'scrapyjs.SplashAwareFSCacheStorage'
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'appstore.pipelines.AppstoreWritePipeline': 1,
-   'appstore.pipelines.AppstoreImagesPipeline': 2,
+   #'appstore.pipelines.AppstoreImagesPipeline': 2,
    'appstore.pipelines.AppstoreMongodbPipeline': 3,
 }
 

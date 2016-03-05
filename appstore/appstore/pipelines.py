@@ -5,7 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-from scrapy.contrib.pipeline.images import ImagesPipeline
+#from scrapy.contrib.pipeline.images import ImagesPipeline
 from scrapy.exceptions import DropItem
 from scrapy import Request
 import pymongo
@@ -20,7 +20,7 @@ class AppstoreWritePipeline(object):
         self.file.write(val)
         return item  # must return (or drop) the item at the end of each pipeline, this item will be used in subsequent item pipeline
 
-
+'''
 class AppstoreImagesPipeline(ImagesPipeline):
     def get_media_requests(self, item, info):
         image_url = item['image_url']
@@ -32,7 +32,7 @@ class AppstoreImagesPipeline(ImagesPipeline):
             raise DropItem("Item contains no images")
         item['image_paths'] = image_paths
         return item
-
+'''
 
 class AppstoreMongodbPipeline(object):
     def __init__(self, mongo_uri, mongo_db):
